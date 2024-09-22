@@ -31,8 +31,8 @@ contract("Aadhaar", (accounts) => {
     await aadhaarInstance.requestAccessName(user, { from: company });
     await aadhaarInstance.grantAccessName(user, { from: user });
 
-    const accessList = await aadhaarInstance.accessMappingName(user);
-    assert.equal(accessList[0], company, "Company should have access to name");
+    const accessListEntry = await aadhaarInstance.accessMappingName(user, 0); // Get the first company in the access list
+    assert.equal(accessListEntry, company, "Company should have access to name");
   });
 
   it("should only allow the user to grant access to their Name", async () => {
@@ -52,8 +52,11 @@ contract("Aadhaar", (accounts) => {
     await aadhaarInstance.requestAccessName(user, { from: company });
     await aadhaarInstance.grantAccessName(user, { from: user });
 
-    const accessList = await aadhaarInstance.accessMappingName(user);
-    assert.equal(accessList.length, 1, "Duplicate entries should not be added");
+    const accessListEntry = await aadhaarInstance.accessMappingName(user, 0); // Check the first company
+    assert.equal(accessListEntry, company, "Company should have access to name");
+
+    const accessListLength = await aadhaarInstance.accessMappingName.call(user); // Check the length of the array
+    assert.equal(accessListLength.length, 1, "Duplicate entries should not be added");
   });
 
   it("should allow a company to request access to DOB", async () => {
@@ -69,8 +72,8 @@ contract("Aadhaar", (accounts) => {
     await aadhaarInstance.requestAccessDOB(user, { from: company });
     await aadhaarInstance.grantAccessDOB(user, { from: user });
 
-    const accessList = await aadhaarInstance.accessMappingDOB(user);
-    assert.equal(accessList[0], company, "Company should have access to DOB");
+    const accessListEntry = await aadhaarInstance.accessMappingDOB(user, 0); // Get the first company in the access list
+    assert.equal(accessListEntry, company, "Company should have access to DOB");
   });
 
   it("should emit event when a company requests access to Gender", async () => {
@@ -86,8 +89,8 @@ contract("Aadhaar", (accounts) => {
     await aadhaarInstance.requestAccessGender(user, { from: company });
     await aadhaarInstance.grantAccessGender(user, { from: user });
 
-    const accessList = await aadhaarInstance.accessMappingGender(user);
-    assert.equal(accessList[0], company, "Company should have access to Gender");
+    const accessListEntry = await aadhaarInstance.accessMappingGender(user, 0); // Get the first company in the access list
+    assert.equal(accessListEntry, company, "Company should have access to Gender");
   });
 
 });
